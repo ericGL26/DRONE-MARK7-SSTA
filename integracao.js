@@ -1,5 +1,13 @@
 var joystickAlturaRotacao = document.getElementById("joystickAlturaRotacao")
 var joystickDirecoes = document.getElementById("joystickDirecoes")
+var botaoLigarDesligar = document.getElementById("BotaoLigarDesligar")
+var botaoVoltarCasa = document.getElementById("BotaoVoltarCasa")
+var botaoSoltarCarga = document.getElementById("BotaoSoltarCarga")
+var botaoDecolar = document.getElementById("BotaoDecolar")
+var botaoPousar = document.getElementById("BotaoPousar")
+
+var EstadoJoystickAlturaRotacao = {Direcao: "", Forca: 0}
+var EstadoJoystickDirecoes = {Direcao: "", Forca: 0}
 
 //configuracao do joystick altura e rotacao
 joystickAlturaRotacao = nipplejs.create({
@@ -11,7 +19,8 @@ joystickAlturaRotacao = nipplejs.create({
 })
 
 joystickAlturaRotacao.on('move', function(event, data) {
-    console.log('Direcao: ', data.angle?.degree, 'Distancia', data.distance);
+    EstadoJoystickAlturaRotacao.Direcao = data.angle?.degree;
+    EstadoJoystickAlturaRotacao.Forca = data.distance;
 });
 
 //configuracao do joystick direcoes
@@ -24,6 +33,8 @@ joystickDirecoes = nipplejs.create({
 })
 
 joystickDirecoes.on('move', function(event, data) {
-    console.log('Direcao: ', data.angle?.degree, 'Distancia', data.distance);
+    EstadoJoystickDirecoes.Direcao = data.angle?.degree;
+    EstadoJoystickDirecoes.Forca = data.distance;
 })
+
 
