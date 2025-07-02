@@ -114,4 +114,3 @@ joystickDirecoes.on('move', function(event, data) {
           }
       })
   })
-
