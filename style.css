@@ -18,42 +18,51 @@ body {
 
 .div-funcoes-especiais {
     display: flex;
-    height: 1000px;
+    height: 1100px;
     width: 45%;
     background-color: #29292e;
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    gap: 20px;
+    border-radius: 50px;
+    margin-left: 40px;
 }
 
 .botao-ligar-desligar {
     height: 200px;
     width: 200px;
     background-color: #35353b;
+    border-radius: 20%;
 }
 
 .botao-decolar {
     height: 200px;
     width: 200px;
     background-color: #35353b;
+    border-radius: 20%;
 }
 
 .botao-pousar {
     height: 200px;
     width: 200px;
     background-color: #35353b;
+    border-radius: 20%;
 }
 
 .botao-voltar-casa {
     height: 200px;
     width: 200px;
     background-color: #35353b;
+    border-radius: 20%;
+
 }
 
 .botao-soltar-carga {
     height: 200px;
     width: 200px;
     background-color: #35353b;
+    border-radius: 20%;
 }
 
 h1 {

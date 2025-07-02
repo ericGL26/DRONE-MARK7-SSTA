@@ -15,7 +15,7 @@ joystickAlturaRotacao = nipplejs.create({
     mode: 'static',
     position: {left: '215px', top: '50%'},
     color: 'gray',
-    size: 300
+    size: 350
 })
 
 joystickAlturaRotacao.on('move', function(event, data) {
@@ -47,7 +47,7 @@ joystickDirecoes = nipplejs.create({
     mode: 'static',
     position: {left: '750px', top: '50%'},
     color: 'gray',
-    size: 300
+    size: 350
 })
 
 joystickDirecoes.on('move', function(event, data) {
