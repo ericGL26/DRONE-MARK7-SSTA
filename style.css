@@ -1,70 +1,95 @@
 body {
-    background-color: #121212;
+  background-color: #121212;
+  margin: 0;
+  padding: 0;
 }
 
-.div-controles-direcoes { 
+/* Área dos controles inferiores */
+.div-controles-direcoes {
   display: flex;
-  height: 700px;
+  height: 250px;
   width: 100%;
   background-color: #414149;
   position: fixed;
   bottom: 0;
   left: 0;
   align-items: center;
-  justify-content: center;
-  gap: 40px;
+  justify-content: space-around;
+  gap: 15px;
   z-index: 10;
 }
 
+/* Botões de funções especiais */
 .div-funcoes-especiais {
-    display: flex;
-    height: 1100px;
-    width: 45%;
-    background-color: #29292e;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    border-radius: 50px;
-    margin-left: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: #29292e;
+  padding: 10px;
+  border-radius: 30px;
+  margin: 10px;
 }
 
-.botao-ligar-desligar {
-    height: 200px;
-    width: 200px;
-    background-color: #35353b;
-    border-radius: 20%;
-}
-
-.botao-decolar {
-    height: 200px;
-    width: 200px;
-    background-color: #35353b;
-    border-radius: 20%;
-}
-
-.botao-pousar {
-    height: 200px;
-    width: 200px;
-    background-color: #35353b;
-    border-radius: 20%;
-}
-
-.botao-voltar-casa {
-    height: 200px;
-    width: 200px;
-    background-color: #35353b;
-    border-radius: 20%;
-
-}
-
+/* Estilização dos botões */
+.botao-ligar-desligar,
+.botao-decolar,
+.botao-pousar,
+.botao-voltar-casa,
 .botao-soltar-carga {
-    height: 200px;
-    width: 200px;
-    background-color: #35353b;
-    border-radius: 20%;
+  height: 80px;
+  width: 80px;
+  background-color: #35353b;
+  border-radius: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  text-align: center;
 }
 
+/* Texto dos botões */
 h1 {
-    color: rgb(174, 171, 171);
+  color: rgb(174, 171, 171);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Joysticks */
+.joystick-altura-rotacao,
+.joystick-direcoes {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  border-radius: 50%;
+}
+
+/* Responsivo para telas pequenas */
+@media (max-width: 420px) {
+  .div-controles-direcoes {
+    height: 220px;
+    gap: 10px;
+  }
+
+  .joystick-altura-rotacao,
+  .joystick-direcoes {
+    width: 100px;
+    height: 100px;
+  }
+
+  .botao-ligar-desligar,
+  .botao-decolar,
+  .botao-pousar,
+  .botao-voltar-casa,
+  .botao-soltar-carga {
+    height: 70px;
+    width: 70px;
+    font-size: 11px;
+  }
+
+  h1 {
+    font-size: 11px;
+  }
 }

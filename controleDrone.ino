@@ -11,12 +11,12 @@ DNSServer dnsServer;
 ESP8266WebServer server(80);
 
 const char pagina_html[] PROGMEM = R"rawliteral(
-
   <!DOCTYPE html>
   <html>
   <head>
       <title>PROJETO-DRONE-MARK7-SSTA</title>
       <link rel="stylesheet" href="style.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
       <div class="div-funcoes-especiais">
@@ -27,80 +27,111 @@ const char pagina_html[] PROGMEM = R"rawliteral(
           <button id="BotaoPousar" class="botao-pousar"><h1>POUSAR</h1></button>
       </div>
 
-      <script src="nipplejs.min.js"></script> <!-- importando a biblioteca nippleJS (serve para criar joysticks)-->
+      <script src="/nipplejs.min.js"></script> <!-- importando a biblioteca nippleJS (serve para criar joysticks)-->
       <div class="div-controles-direcoes">
           <div id="joystickAlturaRotacao" class="joystick-altura-rotacao"></div>
           <div id="joystickDirecoes" class="joystick-direcoes"></div>
       </div>
-      <script src="integracao.js"></script>
+      <script src="integracao.js" defer></script>
   </body>
   </html>
-
 )rawliteral";
 
 const char style_css[] PROGMEM = R"rawliteral(
-
-  body {
+    body {
       background-color: #121212;
+      margin: 0;
+      padding: 0;
   }
 
+  /* Área dos controles inferiores */
   .div-controles-direcoes { 
-    display: flex;
-    height: 700px;
-    width: 100%;
-    background-color: #414149;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    z-index: 10;
+      display: flex;
+      height: 250px;
+      width: 100%;
+      background-color: #414149;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      align-items: center;
+      justify-content: space-around;
+      gap: 15px;
+      z-index: 10;
   }
 
+  /* Botões de funções especiais */
   .div-funcoes-especiais {
       display: flex;
-      height: 1000px;
-      width: 45%;
-      background-color: #29292e;
-      align-items: center;
-      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 10px;
       justify-content: center;
+      align-items: center;
+      background-color: #29292e;
+      padding: 10px;
+      border-radius: 30px;
+      margin: 10px;
   }
 
-  .botao-ligar-desligar {
-      height: 200px;
-      width: 200px;
-      background-color: #35353b;
-  }
-
-  .botao-decolar {
-      height: 200px;
-      width: 200px;
-      background-color: #35353b;
-  }
-
-  .botao-pousar {
-      height: 200px;
-      width: 200px;
-      background-color: #35353b;
-  }
-
-  .botao-voltar-casa {
-      height: 200px;
-      width: 200px;
-      background-color: #35353b;
-  }
-
+  /* Estilização dos botões */
+  .botao-ligar-desligar,
+  .botao-decolar,
+  .botao-pousar,
+  .botao-voltar-casa,
   .botao-soltar-carga {
-      height: 200px;
-      width: 200px;
+      height: 80px;
+      width: 80px;
       background-color: #35353b;
+      border-radius: 20%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      text-align: center;
   }
 
+  /* Texto dos botões */
   h1 {
       color: rgb(174, 171, 171);
+      font-size: 13px;
+      margin: 0;
   }
+
+  /* Joysticks */
+  .joystick-altura-rotacao, .joystick-direcoes {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      border-radius: 50%;
+  }
+
+  /* Responsivo para telas pequenas */
+  @media (max-width: 420px) {
+    .div-controles-direcoes {
+      height: 220px;
+      gap: 10px;
+    }
+
+    .joystick-altura-rotacao, .joystick-direcoes {
+      width: 100px;
+      height: 100px;
+    }
+
+    .botao-ligar-desligar,
+    .botao-decolar,
+    .botao-pousar,
+    .botao-voltar-casa,
+    .botao-soltar-carga {
+      height: 70px;
+      width: 70px;
+      font-size: 11px;
+    }
+
+    h1 {
+      font-size: 11px;
+    }
+  }
+
 
 )rawliteral";
 
@@ -114,79 +145,134 @@ const char integracao_js[] PROGMEM = R"rawliteral(
   var botaoDecolar = document.getElementById("BotaoDecolar")
   var botaoPousar = document.getElementById("BotaoPousar")
 
+  let podeEnviarAlturaRotacao = true;
+  let podeEnviarDirecoes = true;
+
+
   var EstadoJoystickAlturaRotacao = {Direcao: "", Forca: 0}
   var EstadoJoystickDirecoes = {Direcao: "", Forca: 0}
 
   //configuracao do joystick altura e rotacao
   joystickAlturaRotacao = nipplejs.create({
-    zone : joystickAlturaRotacao,
-    mode: 'static',
-    position: {left: '215px', top: '50%'},
-    color: 'gray',
-    size: 300
+   zone : joystickAlturaRotacao,
+   mode: 'static',
+   position: {left: '250px', top: '50%'},
+   color: 'gray',
+   size: 160
   })
 
   joystickAlturaRotacao.on('move', function(event, data) {
+    if (podeEnviarAlturaRotacao) {
       EstadoJoystickAlturaRotacao.Direcao = data.angle?.degree;
       EstadoJoystickAlturaRotacao.Forca = data.distance;
+
+      fetch('/joystickAlturaRotacao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          EstadoJoystickAlturaRotacao: EstadoJoystickAlturaRotacao
+        })
+      })
+      .then(response => response.text())
+      .then(respostaDoServidor => {
+        console.log('Resposta do servidor: ', respostaDoServidor)
+      })
+      .catch(error => {
+        console.error('Erro: ', error);
+      });
+
+      // Bloqueia envios por 100ms (ajuste conforme quiser)
+      podeEnviarAlturaRotacao = false;
+      setTimeout(() => {
+        podeEnviarAlturaRotacao = true;
+      }, 100);
+    }
   });
+
 
   //configuracao do joystick direcoes
   joystickDirecoes = nipplejs.create({
-      zone: joystickDirecoes,
-      mode: 'static',
-      position: {left: '750px', top: '50%'},
-      color: 'gray',
-      size: 300
+    zone: joystickDirecoes,
+    mode: 'static',
+    position: {right: '250px', top: '50%'},
+    color: 'gray',
+    size: 160
   })
 
-  joystickDirecoes.on('move', function(event, data) {
+    joystickDirecoes.on('move', function(event, data) {
+    if (podeEnviarDirecoes) {
       EstadoJoystickDirecoes.Direcao = data.angle?.degree;
       EstadoJoystickDirecoes.Forca = data.distance;
-  })
 
-  //endpoints para funcoes do drone
-
-  botaoLigarDesligar.addEventListener("click", function(){
-      fetch("/ligarDesligar").then(response => {
-        if(response.ok){
-          console.log("Comando ligar-desligar enviado")
-        }
+      fetch('/joystickDirecoes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          EstadoJoystickDirecoes: EstadoJoystickDirecoes
+        })
+      })
+      .then(response => response.text())
+      .then(respostaDoServidor => {
+        console.log('Resposta do servidor: ', respostaDoServidor)
+      })
+      .catch(error => {
+        console.error('Erro: ', error);
       });
+
+      // Bloqueia envios por 100ms (ajuste conforme quiser)
+      podeEnviarDirecoes = false;
+      setTimeout(() => {
+        podeEnviarDirecoes = true;
+      }, 100);
+    }
   });
 
-  botaoDecolar.addEventListener("click", function(){
-      fetch("/decolar").then(response => {
+
+  //endpoints para funcoes do drone
+    botaoLigarDesligar.addEventListener("click", function(){
+        fetch("/ligarDesligar").then(response => {
           if(response.ok){
-              console.log("Comando decolar enviado")
+            console.log("Comando ligar-desligar enviado")
           }
-      })
-  })
+        });
+    });
 
-  botaoPousar.addEventListener("click", function() {
-      fetch("/pousar").then(response => {
-          if(response.ok) {
-              console.log("comando pousar enviado")
-          }
-      })
-  })
+    botaoDecolar.addEventListener("click", function(){
+        fetch("/decolar").then(response => {
+            if(response.ok){
+                console.log("Comando decolar enviado")
+            }
+        })
+    })
 
-  botaoVoltarCasa.addEventListener("click", function(){
-      fetch("/casa").then(response => {
-          if(response.ok) {
-              console.log("Comando voltar para casa enviado")
-          }
-      })
-  })
+    botaoPousar.addEventListener("click", function() {
+        fetch("/pousar").then(response => {
+            if(response.ok) {
+                console.log("comando pousar enviado")
+            }
+        })
+    })
 
-  botaoSoltarCarga.addEventListener("click", function() {
-      fetch("/soltarCarga").then(response => {
-          if(response.ok) {
-              console.log("Comando solcar carga enviado")
-          }
-      })
-  })
-};
+    botaoVoltarCasa.addEventListener("click", function(){
+        fetch("/casa").then(response => {
+            if(response.ok) {
+                console.log("Comando voltar para casa enviado")
+            }
+        })
+    })
+
+    botaoSoltarCarga.addEventListener("click", function() {
+        fetch("/soltarCarga").then(response => {
+            if(response.ok) {
+                console.log("Comando solcar carga enviado")
+            }
+        })
+    })
+  };
 )rawliteral";
 
 const char nipple_js[] PROGMEM = R"rawliteral(
@@ -236,6 +322,20 @@ void setup(){
   server.on("/decolar", []() {
     Serial.println("Comando decolar recebido");
     server.send(200, "text/plain", "Comando decolar recebido");
+  });
+
+  server.on("/joystickAlturaRotacao", HTTP_POST, []() {
+    String body = server.arg("plain"); //pega o conteudo enviado pelo fetch
+    Serial.print("Comando recebido");
+    Serial.println(body);
+    server.send(200, "text/plain", "Comando recebido com sucesso");
+  });
+
+  server.on("/joystickDirecoes", HTTP_POST, []() {
+    String body = server.arg("plain"); //pega o conteudo enviado pelo fetch
+    Serial.print("Comando recebido");
+    Serial.println(body);
+    server.send(200, "text/plain", "Comando recebido com sucesso");
   });
 
   server.on("/nipplejs.min.js", [](){
