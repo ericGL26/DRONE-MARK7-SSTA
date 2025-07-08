@@ -1,0 +1,13 @@
+Criar um drone com esp32, alem de voar ele deve receber comandos especiais por exemplo:
+1-Voltar para casa
+2-Soltar carga
+3-Decolar sozinho
+4-Pousar sozinho
+5-Modo cabeca: Colocando um giroscopio como acessorio, ele deve girar no proprio eixo de acordo com a posicao da cabeca de quem o controla
+6-Seguir mestre: Seguir o usuario mantendo uma distancia segura sem colidir com obstaculos
+
+Em se servidor deve armazenar:
+Rotas anteriores.
+Hora e trajeto de cada voo.
+Usuario que o usou.
+Dispositivo pelo qual foi controlado.
