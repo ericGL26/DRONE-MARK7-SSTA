@@ -1,0 +1,30 @@
+As comunicacoes sao:
+ESP32 no drone com modulo nrf24l01(radio) em modo transceptor para enviar e receber sinal
+ESP8266 com modulo nrf24l01 para receber e enviar dados para o drone
+
+O controle(esp8266 + nrf) envia os comandos via radio para o drone.
+drone recebe os comandos via nrf que escuta e transmite para a esp32,
+na qual executa o comando recebido com o codigo de controle de voo inserido na esp32.
+a cada 10 minutos o drone envia dados de voo via radio para o controle.
+o controle (esp8266) salva esses dados e envia via http para uma api que está rodando localmente em algum disposivo,
+essa api recebe e salva esses dados em um banco de dados mongoDB Atlas.
+
+
+O projeto utiliza dois microcontroladores principais:
+uma ESP32 embarcada no drone e uma ESP8266 integrada ao controle remoto. 
+Ambos estão equipados com módulos NRF24L01, responsáveis pela comunicação via rádio na frequência de 2,4 GHz.
+
+A ESP8266 presente no controle opera enviando comandos via rádio para o drone. 
+Esses comandos são recebidos pelo módulo NRF24L01 acoplado à ESP32 do drone, que repassa os dados para a microcontroladora.
+A ESP32, então, interpreta e executa as instruções recebidas de acordo com a lógica de controle de voo
+implementada em seu firmware.
+
+Além de receber comandos, a ESP32 no drone é responsável por coletar informações de voo, como altitude, tempo de operação,
+e demais dados relevantes.
+A cada intervalo de 10 minutos, o drone transmite esses dados de volta via rádio para a ESP8266 do controle.
+
+Ao receber essas informações, a ESP8266 as processa e realiza o envio via rede Wi-Fi
+para uma API HTTP que está rodando localmente em um dispositivo conectado à mesma rede
+(como um computador, notebook ou Raspberry Pi).
+ Essa API recebe os dados de voo através de uma requisição HTTP POST,
+ processa as informações e as armazena em um banco de dados MongoDB Atlas hospedado na nuvem.
