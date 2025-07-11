@@ -1,15 +1,20 @@
 const axios = require("axios")
 const assert = require("assert")
+const datahora = new Date();
+
+const datahoraFormatada = datahora.toLocaleString("pt-BR", {
+  timeZone: "America/Sao_Paulo"
+});
 
 describe("Suite de testes da api do banco de dados", () => {
   describe("Suite de testes da rota /API/PostDados", () => {
     it("Teste enviar dados corretos", async () => {
       const dados = {
-        rotaFeita: "teste",
-        horaDecolagem: "teste",
-        horaPouso: "teste",
-        usuario: "teste",
-        dispositivoControlador: "teste"
+        rotaFeita: "Rever",
+        horaDecolagem: datahoraFormatada,
+        horaPouso: datahoraFormatada,
+        usuario: "ERIC",
+        dispositivoControlador: "XIAOMI REDMI NODE 14"
       };
 
       try {
