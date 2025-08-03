@@ -2,7 +2,7 @@
 #ifndef PINS_H
 #define PINS_H
 
-//pins do SPI/ESP32 para o NRF24l01(RADIO)
+//pins do SPI/ESP32 para o NRF24l01(NRF24L01 DO DRONE)
 #define CE_PIN 15
 #define CNS_PIN 2
 #define SCK_PIN 4

@@ -28,3 +28,7 @@ para uma API HTTP que está rodando localmente em um dispositivo conectado à me
 (como um computador, notebook ou Raspberry Pi).
  Essa API recebe os dados de voo através de uma requisição HTTP POST,
  processa as informações e as armazena em um banco de dados MongoDB Atlas hospedado na nuvem.
+
+ Os dados são compilados pelo platformIO
+
+ Os pinos de conexão de cada parte do projeto (drone, controle) são definidos em arquivos .pinos em suas respectivas pastas
